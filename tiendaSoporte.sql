@@ -13,8 +13,8 @@ CREATE TABLE EmpleadoSoporte (
     id_empleado SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(100) NOT NULL UNIQUE,
-	contrasena VARCHAR(100) NOT NULL
-	telefono VARCHAR(15) NOT NULL,
+	contrasena VARCHAR(100) NOT NULL,
+	telefono VARCHAR(15) NOT NULL
 );
 
 -- Tabla Reporte
@@ -52,4 +52,4 @@ CREATE TABLE Soluciones (
     fecha_aplicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_incidencia) REFERENCES Incidencia(id_incidencia),
     FOREIGN KEY (id_empleado_solucion) REFERENCES EmpleadoSoporte(id_empleado)  -- Relaciona con la tabla EmpleadoSoporte
-);
+);  
