@@ -1,92 +1,184 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Gestión de Incidencias - Soporte</title>
-  <style>
-    form input, form select, form button {
-      margin: 5px;
-      padding: 6px;
-    }
-    table, th, td {
-      border: 1px solid #ccc;
-      border-collapse: collapse;
-      padding: 8px;
-    }
-  </style>
-</head>
-<body class="soporte">
-  <header>
-    <h1>Panel de Soporte</h1>
-  </header>
 
-  <main class="soporte">
-    <section class="formulario">
-      <h2>Nuevo Reporte</h2>
-      <form id="form-reporte">
-        <input type="text" id="titulo" placeholder="Título del reporte" required />
-        <select id="estado" required>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Incidencias - Soporte</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            color: #333;
+        }
+        
+        header {
+            background-color: #0d6efd;
+            color: white;
+            padding: 1rem;
+            text-align: center;
+        }
+        
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+        
+        h2 {
+            color: #0d6efd;
+        }
+        
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background-color: #ffffff;
+            padding: 1rem;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        form input,
+        form select {
+            flex: 1 1 200px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        
+        form button {
+            padding: 10px 20px;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        form button:hover {
+            background-color: #084298;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        th,
+        td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        
+        th {
+            background-color: #e9ecef;
+        }
+        
+        tbody tr:hover {
+            background-color: #f1f3f5;
+        }
+        
+        button[type="button"] {
+            background-color: #20c997;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        
+        button[type="button"]:hover {
+            background-color: #198754;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 4rem;
+            padding: 1rem;
+            background-color: #f1f3f5;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Panel de Soporte</h1>
+    </header>
+
+    <main>
+        <section class="formulario">
+            <h2>Nuevo Reporte</h2>
+            <form id="form-reporte">
+                <input type="text" id="titulo" placeholder="Título del reporte" required />
+                <select id="estado" required>
           <option value="">Estado</option>
           <option value="Pendiente">Pendiente</option>
           <option value="En Proceso">En Proceso</option>
           <option value="Resuelto">Resuelto</option>
           <option value="Cerrado">Cerrado</option>
         </select>
-        <select id="prioridad" required>
+                <select id="prioridad" required>
           <option value="">Prioridad</option>
           <option value="Alta">Alta</option>
           <option value="Media">Media</option>
           <option value="Baja">Baja</option>
         </select>
-        <input type="text" id="responsable" placeholder="Responsable" required />
-        <button type="submit">Agregar Reporte</button>
-      </form>
-    </section>
+                <input type="text" id="responsable" placeholder="Responsable" required />
+                <button type="submit">Agregar Reporte</button>
+            </form>
+        </section>
 
-    <section class="tabla">
-      <h2>Lista de Reportes</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Título</th>
-            <th>Estado</th>
-            <th>Prioridad</th>
-            <th>Responsable</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody id="tabla-reportes">
-          <!-- Reportes aquí -->
-        </tbody>
-      </table>
-    </section>
-  </main>
+        <section class="tabla">
+            <h2>Lista de Reportes</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Título</th>
+                        <th>Estado</th>
+                        <th>Prioridad</th>
+                        <th>Responsable</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tabla-reportes">
+                    <!-- Reportes aquí -->
+                </tbody>
+            </table>
+        </section>
+    </main>
 
-  <footer class="soporte">
-    <p>&copy; 2025 Centro de Soporte</p>
-  </footer>
+    <footer>
+        <p>&copy; 2025 Centro de Soporte</p>
+    </footer>
 
-  <script>
-    let contadorID = 1;
+    <script>
+        let contadorID = 1;
 
-    document.getElementById('form-reporte').addEventListener('submit', function(e) {
-      e.preventDefault();
+        document.getElementById('form-reporte').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-      const titulo = document.getElementById('titulo').value.trim();
-      const estado = document.getElementById('estado').value;
-      const prioridad = document.getElementById('prioridad').value;
-      const responsable = document.getElementById('responsable').value.trim();
+            const titulo = document.getElementById('titulo').value.trim();
+            const estado = document.getElementById('estado').value;
+            const prioridad = document.getElementById('prioridad').value;
+            const responsable = document.getElementById('responsable').value.trim();
 
-      if (!titulo || !estado || !prioridad || !responsable) return;
+            if (!titulo || !estado || !prioridad || !responsable) return;
 
-      const tabla = document.getElementById('tabla-reportes');
-      const fila = document.createElement('tr');
+            const tabla = document.getElementById('tabla-reportes');
+            const fila = document.createElement('tr');
 
-      const tituloEscapado = titulo.replace(/'/g, "\\'");
-
-      fila.innerHTML = `
+            const tituloEscapado = titulo.replace(/'/g, "\\'");
+            fila.innerHTML = `
         <td>${contadorID}</td>
         <td>${titulo}</td>
         <td>${estado}</td>
@@ -94,36 +186,37 @@
         <td>${responsable}</td>
         <td><button type="button" onclick="enviarNotificacion('${tituloEscapado}')">Notificar</button></td>
       `;
-      tabla.appendChild(fila);
+            tabla.appendChild(fila);
 
-      enviarNotificacion(titulo);
+            enviarNotificacion(titulo);
 
-      contadorID++;
-      this.reset();
-    });
-
-    function enviarNotificacion(titulo) {
-      if (!("Notification" in window)) {
-        console.warn("Notificaciones no soportadas.");
-        return;
-      }
-
-      if (Notification.permission === "granted") {
-        new Notification("📢 Nuevo reporte registrado", {
-          body: titulo,
-          icon: "https://cdn-icons-png.flaticon.com/512/1827/1827301.png"
+            contadorID++;
+            this.reset();
         });
-      } else if (Notification.permission !== "denied") {
-        Notification.requestPermission().then(permission => {
-          if (permission === "granted") {
-            new Notification("📢 Nuevo reporte registrado", {
-              body: titulo,
-              icon: "https://cdn-icons-png.flaticon.com/512/1827/1827301.png"
-            });
-          }
-        });
-      }
-    }
-  </script>
+
+        function enviarNotificacion(titulo) {
+            if (!("Notification" in window)) {
+                console.warn("Notificaciones no soportadas.");
+                return;
+            }
+
+            if (Notification.permission === "granted") {
+                new Notification("📢 Nuevo reporte registrado", {
+                    body: titulo,
+                    icon: "https://cdn-icons-png.flaticon.com/512/1827/1827301.png"
+                });
+            } else if (Notification.permission !== "denied") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") {
+                        new Notification("📢 Nuevo reporte registrado", {
+                            body: titulo,
+                            icon: "https://cdn-icons-png.flaticon.com/512/1827/1827301.png"
+                        });
+                    }
+                });
+            }
+        }
+    </script>
 </body>
+
 </html>
