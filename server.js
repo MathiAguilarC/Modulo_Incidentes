@@ -14,17 +14,11 @@ const pool = require('./db/connection');
 
 // Ruta de login
 app.post('/login', (req, res) => {
-    const { correo, contrasena, tipo_usuario } = req.body;  // Suponiendo que 'correo', 'contrasena' y 'tipo_usuario' se pasan en el cuerpo del request
+    const { correo, contrasena } = req. body;  // Solo recibimos correo y contraseña
     
-    let query;
-    
-    if (tipo_usuario === 'cliente') {
-        query = 'SELECT * FROM Cliente WHERE correo = $1';  // Usamos el formato de parámetros de PostgreSQL
-    } else if (tipo_usuario === 'soporte') {
-        query = 'SELECT * FROM EmpleadoSoporte WHERE correo = $1';
-    } else {
-        return res.status(400).json({ error: 'Tipo de usuario no válido' });
-    }
+    // Primero, buscamos en la tabla Cliente
+    let query = 'SELECT * FROM Cliente WHERE correo = $1';
+    let tipo_usuario = 'cliente';
 
     pool.query(query, [correo], (err, result) => {
         if (err) {
@@ -32,27 +26,50 @@ app.post('/login', (req, res) => {
         }
 
         if (result.rows.length === 0) {
-            return res.status(400).json({ error: 'Usuario no encontrado' });
+            // Si no se encuentra el cliente, buscamos en la tabla de soporte
+            query = 'SELECT * FROM EmpleadoSoporte WHERE correo = $1';
+            tipo_usuario = 'soporte';  // Asumimos que si no es cliente, es soporte
+            
+            pool.query(query, [correo], (err, result) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Error en la base de datos' });
+                }
+
+                if (result.rows.length === 0) {
+                    return res.status(400).json({ error: 'Usuario no encontrado' });
+                }
+
+                // Si lo encontramos en la tabla EmpleadoSoporte, comparamos la contraseña
+                const usuario = result.rows[0];
+                bcrypt.compare(contrasena, usuario.contrasena, (err, isMatch) => {
+                    if (err) {
+                        return res.status(500).json({ error: 'Error en la comparación de contraseñas' });
+                    }
+
+                    if (!isMatch) {
+                        return res.status(400).json({ error: 'Contraseña incorrecta' });
+                    }
+
+                    // Redirige al soporte
+                    res.redirect('/soporte');
+                });
+            });
+        } else {
+            // Si lo encontramos en la tabla Cliente, comparamos la contraseña
+            const usuario = result.rows[0];
+            bcrypt.compare(contrasena, usuario.contrasena, (err, isMatch) => {
+                if (err) {
+                    return res.status(500).json({ error: 'Error en la comparación de contraseñas' });
+                }
+
+                if (!isMatch) {
+                    return res.status(400).json({ error: 'Contraseña incorrecta' });
+                }
+
+                // Redirige al cliente (centro de ayuda)
+                res.redirect('/cliente');
+            });
         }
-
-        // Compara la contraseña con el hash almacenado en la base de datos
-        const usuario = result.rows[0];
-        bcrypt.compare(contrasena, usuario.contrasena, (err, isMatch) => {
-            if (err) {
-                return res.status(500).json({ error: 'Error en la comparación de contraseñas' });
-            }
-
-            if (!isMatch) {
-                return res.status(400).json({ error: 'Contraseña incorrecta' });
-            }
-
-            // Redirige según el tipo de usuario
-            if (tipo_usuario === 'cliente') {
-                res.redirect('/cliente');  // Redirige al centro de ayuda (cliente)
-            } else if (tipo_usuario === 'soporte') {
-                res.redirect('/soporte');  // Redirige al soporte
-            }
-        });
     });
 });
 
