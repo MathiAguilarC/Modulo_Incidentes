@@ -13,7 +13,8 @@ CREATE TABLE EmpleadoSoporte (
     id_empleado SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(100) NOT NULL UNIQUE,
-    telefono VARCHAR(15) NOT NULL
+	contrasena VARCHAR(100) NOT NULL
+	telefono VARCHAR(15) NOT NULL,
 );
 
 -- Tabla Reporte
