@@ -1,0 +1,137 @@
+/* cliente.css */
+
+body .cliente {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+  
+header .cliente {
+    background-color: #004080;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+}
+  
+main .cliente {
+    max-width: 600px;
+    margin: 2rem auto;
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+  
+form .cliente {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+  
+input .cliente, textarea .cliente, select .cliente {
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 1rem;
+    width: 100%;
+}
+  
+button .cliente {
+    background-color: #004080;
+    color: white;
+    border: none;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+}
+  
+button:hover .cliente{
+    background-color: #0066cc;
+}
+  
+footer .cliente{
+    text-align: center;
+    padding: 1rem;
+    background-color: #004080;
+    color: white;
+    margin-top: 2rem;
+}
+
+/* soporte.css */
+
+body .soporte{
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background-color: #f0f0f0;
+    color: #333;
+  }
+  
+  header .soporte{
+    background-color: #003366;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+  }
+  
+  main .soporte{
+    max-width: 90%;
+    margin: 2rem auto;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filtros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .filtros input,
+  .filtros select {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+  
+  table .soporte{
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  table th .soporte,
+  table td .soporte{
+    padding: 0.8rem;
+    border: 1px solid #ccc;
+    text-align: left;
+  }
+  
+  th .soporte{
+    background-color: #e0e0e0;
+  }
+  
+  button .soporte{
+    padding: 0.5rem 1rem;
+    margin-right: 0.5rem;
+    background-color: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover .soporte{
+    background-color: #004999;
+  }
+  
+  footer .soporte{
+    text-align: center;
+    padding: 1rem;
+    background-color: #003366;
+    color: white;
+    margin-top: 2rem;
+  }
