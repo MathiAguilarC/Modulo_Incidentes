@@ -17,34 +17,47 @@ router.get('/buscar', async (req, res) => {
   }
 });
 
-// Crear cliente si no existe y luego crear reporte
+// Crear reporte sin verificar cliente (ya está autenticado)
 router.post('/crear-reporte', async (req, res) => {
-  const { nombre, correo, telefono, titulo, descripcion, tipo_error } = req.body;
+  const { titulo, descripcion, categoria } = req.body;
 
   try {
-    let clienteId;
+    // Obtén el id_cliente directamente desde la sesión
+    const clienteId = req.session.userId; // Asegúrate de que 'userId' se haya guardado en la sesión al hacer login
 
-    const existing = await pool.query('SELECT id_cliente FROM Cliente WHERE nombre = $1', [nombre]);
-    if (existing.rows.length > 0) {
-      clienteId = existing.rows[0].id_cliente;
-    } else {
-      const insertCliente = await pool.query(
-        'INSERT INTO Cliente (nombre, correo, telefono) VALUES ($1, $2, $3) RETURNING id_cliente',
-        [nombre, correo, telefono]
-      );
-      clienteId = insertCliente.rows[0].id_cliente;
+    if (!clienteId) {
+      return res.status(401).json({ error: 'No estás autenticado' });
     }
 
+    // Crear el reporte usando el id_cliente desde la sesión
     await pool.query(
       'INSERT INTO Reporte (id_cliente, titulo, descripcion, tipo_error) VALUES ($1, $2, $3, $4)',
-      [clienteId, titulo, descripcion, tipo_error]
+      [clienteId, titulo, descripcion, categoria]
     );
 
     res.sendStatus(200);
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Error al crear cliente o reporte' });
+    res.status(500).json({ error: 'Error al crear el reporte' });
   }
+});
+
+document.getElementById('form-incidencia').addEventListener('submit', function(event) {
+  event.preventDefault();
+
+  const formData = new FormData(this);
+
+  // Enviar los datos del formulario al backend
+  fetch('/crear-reporte', {
+    method: 'POST',
+    body: formData
+  })
+  .then(response => response.json())
+  .then(data => {
+    alert('Reporte registrado con éxito');
+    document.getElementById('form-incidencia').reset();  // Resetear el formulario
+  })
+  .catch(error => console.error('Error al reportar incidencia:', error));
 });
 
 module.exports = router;

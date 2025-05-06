@@ -21,6 +21,7 @@ CREATE TABLE EmpleadoSoporte (
 CREATE TABLE Reporte (
     id_reporte SERIAL PRIMARY KEY,
     id_cliente INT,
+    titulo VARCHAR(255) NOT NULL,
     descripcion TEXT NOT NULL,
     tipo_error VARCHAR(50) CHECK (tipo_error IN ('pago', 'devolucion', 'producto', 'otro')) NOT NULL,
     fecha_reporte TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

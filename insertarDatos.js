@@ -11,7 +11,7 @@ const pool = new Pool({
 });
 
 // Función para encriptar la contraseña y luego insertar los datos
-const insertarDatos = async () => {
+const insertarDatos = async () => { 
     try {
         // Encriptar la contraseña
         const contrasenaCliente = await bcrypt.hash('cliente123', 10);  // Contraseña para cliente
