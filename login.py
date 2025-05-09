@@ -79,10 +79,54 @@ def mostrar_menu_cliente():
     label = tk.Label(ventana_cliente, text="Bienvenido Cliente", font=("Arial", 14))
     label.pack(pady=20)
 
+    # Botón para generar un reporte
     btn_reportar = tk.Button(ventana_cliente, text="Generar Reporte", command=generar_reporte_cliente)
     btn_reportar.pack(pady=10)
 
+    # Botón para ver reportes enviados
+    btn_ver_reportes = tk.Button(ventana_cliente, text="Ver Reportes Enviados", command=ver_reportes_enviados_cliente)
+    btn_ver_reportes.pack(pady=10)
+
     ventana_cliente.mainloop()
+
+def generar_reporte_cliente():
+    # Aquí iría la lógica para que el cliente pueda generar un reporte
+    messagebox.showinfo("Generar Reporte", "Esta función permitirá al cliente generar un reporte.")
+
+def ver_reportes_enviados_cliente():
+    correo = entry_correo.get()  # Usamos el correo del cliente para obtener sus reportes
+
+    conn = conectar_db()
+    if conn:
+        cursor = conn.cursor()
+        # Consulta para obtener los reportes enviados por el cliente
+        query_reportes_cliente = """
+        SELECT titulo, descripcion, tipo_error, fecha_reporte 
+        FROM Reporte 
+        WHERE id_cliente = (SELECT id_cliente FROM Cliente WHERE correo = %s);
+        """
+        cursor.execute(query_reportes_cliente, (correo,))
+        reportes = cursor.fetchall()
+
+        if reportes:
+            # Crear una nueva ventana para mostrar los reportes
+            ventana_reportes = tk.Tk()
+            ventana_reportes.title("Reportes Enviados")
+
+            label = tk.Label(ventana_reportes, text="Tus Reportes Enviados", font=("Arial", 14))
+            label.pack(pady=20)
+
+            # Mostrar cada reporte en un Label
+            for reporte in reportes:
+                titulo, descripcion, tipo_error, fecha_reporte = reporte
+                label_reporte = tk.Label(ventana_reportes, text=f"Título: {titulo}\nDescripción: {descripcion}\nTipo: {tipo_error}\nFecha: {fecha_reporte}", font=("Arial", 10))
+                label_reporte.pack(pady=10)
+
+            ventana_reportes.mainloop()
+        else:
+            messagebox.showinfo("Sin Reportes", "No tienes reportes enviados.")
+        
+        conn.close()
 
 def mostrar_menu_soporte():
     ventana.destroy()  # Cierra la ventana de login
@@ -92,18 +136,31 @@ def mostrar_menu_soporte():
     label = tk.Label(ventana_soporte, text="Bienvenido Soporte", font=("Arial", 14))
     label.pack(pady=20)
 
+    # Botón para ver los reportes generados
     btn_ver_reportes = tk.Button(ventana_soporte, text="Ver Reportes", command=ver_reportes_soporte)
     btn_ver_reportes.pack(pady=10)
 
+    # Botón para asignar un reporte
+    btn_asignar_reporte = tk.Button(ventana_soporte, text="Asignar Reporte", command=asignar_reporte)
+    btn_asignar_reporte.pack(pady=10)
+
+    # Botón para actualizar el estado de un reporte
+    btn_actualizar_reporte = tk.Button(ventana_soporte, text="Actualizar Reporte", command=actualizar_reporte)
+    btn_actualizar_reporte.pack(pady=10)
+
     ventana_soporte.mainloop()
 
-def generar_reporte_cliente():
-    # Lógica para generar reporte
-    pass
-
 def ver_reportes_soporte():
-    # Lógica para ver reportes
-    pass
+    # Aquí iría la lógica para que el soporte pueda ver los reportes
+    messagebox.showinfo("Ver Reportes", "Esta función permitirá al soporte ver los reportes generados.")
+
+def asignar_reporte():
+    # Aquí iría la lógica para asignar un reporte a un empleado de soporte
+    messagebox.showinfo("Asignar Reporte", "Esta función permitirá al soporte asignar un reporte.")
+
+def actualizar_reporte():
+    # Aquí iría la lógica para actualizar el estado de un reporte
+    messagebox.showinfo("Actualizar Reporte", "Esta función permitirá al soporte actualizar el estado de un reporte.")
 
 # Ventana de Login
 ventana = tk.Tk()
