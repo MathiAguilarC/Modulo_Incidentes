@@ -20,59 +20,87 @@ def conectar_db():
         messagebox.showerror("Error de Conexión", f"No se pudo conectar a la base de datos: {e}")
         return None
 
-def verificar_usuario():
-    correo = entry_correo.get()
-    contraseña = entry_contraseña.get()
+def mostrar_login():
+    # Función para mostrar la pantalla de login
+    ventana_login = tk.Tk()
+    ventana_login.title("Login")
 
-    # Validación de los campos de entrada
-    if not correo or not contraseña:
-        messagebox.showerror("Error", "Por favor, ingrese todos los campos.")
-        return
+    # Etiquetas y campos de entrada
+    label_correo = tk.Label(ventana_login, text="Correo Electrónico")
+    label_correo.pack(pady=5)
+    entry_correo = tk.Entry(ventana_login)
+    entry_correo.pack(pady=5)
 
-    conn = conectar_db()
-    if conn:
-        cursor = conn.cursor()
+    label_contraseña = tk.Label(ventana_login, text="Contraseña")
+    label_contraseña.pack(pady=5)
+    entry_contraseña = tk.Entry(ventana_login, show="*")
+    entry_contraseña.pack(pady=5)
 
-        # Verificar si el correo pertenece a un Cliente
-        query_cliente = "SELECT id_cliente, contrasena FROM Cliente WHERE correo = %s"
-        cursor.execute(query_cliente, (correo,))
-        cliente = cursor.fetchone()
+    # Función de verificación de usuario dentro del contexto de mostrar_login
+    def verificar_usuario_interno():
+        correo = entry_correo.get()
+        contraseña = entry_contraseña.get()
 
-        # Verificar si el correo pertenece a un EmpleadoSoporte
-        query_soporte = "SELECT id_empleado, contrasena FROM EmpleadoSoporte WHERE correo = %s"
-        cursor.execute(query_soporte, (correo,))
-        soporte = cursor.fetchone()
+        # Validación de los campos de entrada
+        if not correo or not contraseña:
+            messagebox.showerror("Error", "Por favor, ingrese todos los campos.")
+            return
 
-        if cliente:  # Si es un cliente
-            # Verificar si la contraseña coincide con la almacenada en la base de datos
-            try:
-                # La contraseña está almacenada como string, necesitamos convertirla a bytes
-                hash_almacenado = cliente[1].encode('utf-8')
-                if bcrypt.checkpw(contraseña.encode('utf-8'), hash_almacenado):
-                    mostrar_menu_cliente()
-                else:
-                    messagebox.showerror("Error", "Correo o contraseña incorrectos.")
-            except ValueError as e:
-                messagebox.showerror("Error", f"Error en verificación de contraseña: {e}")
-        elif soporte:  # Si es un empleado de soporte
-            # Verificar si la contraseña coincide con la almacenada en la base de datos
-            try:
-                # La contraseña está almacenada como string, necesitamos convertirla a bytes
-                hash_almacenado = soporte[1].encode('utf-8')
-                if bcrypt.checkpw(contraseña.encode('utf-8'), hash_almacenado):
-                    mostrar_menu_soporte()
-                else:
-                    messagebox.showerror("Error", "Correo o contraseña incorrectos.")
-            except ValueError as e:
-                messagebox.showerror("Error", f"Error en verificación de contraseña: {e}")
-        else:
-            messagebox.showerror("Error", "Correo o contraseña incorrectos.")
-        
-        conn.close()
+        conn = conectar_db()
+        if conn:
+            cursor = conn.cursor()
 
+            # Verificar si el correo pertenece a un Cliente
+            query_cliente = "SELECT id_cliente, contrasena FROM Cliente WHERE correo = %s"
+            cursor.execute(query_cliente, (correo,))
+            cliente = cursor.fetchone()
 
-def mostrar_menu_cliente():
-    ventana.destroy()  # Cierra la ventana de login
+            # Verificar si el correo pertenece a un EmpleadoSoporte
+            query_soporte = "SELECT id_empleado, contrasena FROM EmpleadoSoporte WHERE correo = %s"
+            cursor.execute(query_soporte, (correo,))
+            soporte = cursor.fetchone()
+
+            if cliente:  # Si es un cliente
+                # Verificar si la contraseña coincide con la almacenada en la base de datos
+                try:
+                    # La contraseña está almacenada como string, necesitamos convertirla a bytes
+                    hash_almacenado = cliente[1].encode('utf-8')
+                    if bcrypt.checkpw(contraseña.encode('utf-8'), hash_almacenado):
+                        ventana_login.destroy()  # Cerrar ventana de login
+                        mostrar_menu_cliente(correo)  # Pasar el correo como referencia
+                    else:
+                        messagebox.showerror("Error", "Correo o contraseña incorrectos.")
+                except ValueError as e:
+                    messagebox.showerror("Error", f"Error en verificación de contraseña: {e}")
+            elif soporte:  # Si es un empleado de soporte
+                # Verificar si la contraseña coincide con la almacenada en la base de datos
+                try:
+                    # La contraseña está almacenada como string, necesitamos convertirla a bytes
+                    hash_almacenado = soporte[1].encode('utf-8')
+                    if bcrypt.checkpw(contraseña.encode('utf-8'), hash_almacenado):
+                        ventana_login.destroy()  # Cerrar ventana de login
+                        mostrar_menu_soporte(correo)  # Pasar el correo como referencia
+                    else:
+                        messagebox.showerror("Error", "Correo o contraseña incorrectos.")
+                except ValueError as e:
+                    messagebox.showerror("Error", f"Error en verificación de contraseña: {e}")
+            else:
+                messagebox.showerror("Error", "Correo o contraseña incorrectos.")
+            
+            conn.close()
+
+    # Botón de Login
+    btn_login = tk.Button(ventana_login, text="Iniciar Sesión", command=verificar_usuario_interno)
+    btn_login.pack(pady=20)
+
+    ventana_login.mainloop()
+
+def cerrar_sesion(ventana_actual):
+    # Función para cerrar la sesión y volver al login
+    ventana_actual.destroy()
+    mostrar_login()
+
+def mostrar_menu_cliente(correo_usuario):
     ventana_cliente = tk.Tk()
     ventana_cliente.title("Menú Cliente")
 
@@ -80,22 +108,28 @@ def mostrar_menu_cliente():
     label.pack(pady=20)
 
     # Botón para generar un reporte
-    btn_reportar = tk.Button(ventana_cliente, text="Generar Reporte", command=generar_reporte_cliente)
+    btn_reportar = tk.Button(ventana_cliente, text="Generar Reporte", 
+                            command=lambda: generar_reporte_cliente(correo_usuario))
     btn_reportar.pack(pady=10)
 
     # Botón para ver reportes enviados
-    btn_ver_reportes = tk.Button(ventana_cliente, text="Ver Reportes Enviados", command=ver_reportes_enviados_cliente)
+    btn_ver_reportes = tk.Button(ventana_cliente, text="Ver Reportes Enviados", 
+                                command=lambda: ver_reportes_enviados_cliente(correo_usuario, ventana_cliente))
     btn_ver_reportes.pack(pady=10)
+
+    # Botón para cerrar sesión
+    btn_cerrar_sesion = tk.Button(ventana_cliente, text="Cerrar Sesión", 
+                                 command=lambda: cerrar_sesion(ventana_cliente),
+                                 bg="red", fg="white")
+    btn_cerrar_sesion.pack(pady=20)
 
     ventana_cliente.mainloop()
 
-def generar_reporte_cliente():
+def generar_reporte_cliente(correo_usuario):
     # Aquí iría la lógica para que el cliente pueda generar un reporte
     messagebox.showinfo("Generar Reporte", "Esta función permitirá al cliente generar un reporte.")
 
-def ver_reportes_enviados_cliente():
-    correo = entry_correo.get()  # Usamos el correo del cliente para obtener sus reportes
-
+def ver_reportes_enviados_cliente(correo_usuario, ventana_padre):
     conn = conectar_db()
     if conn:
         cursor = conn.cursor()
@@ -105,12 +139,12 @@ def ver_reportes_enviados_cliente():
         FROM Reporte 
         WHERE id_cliente = (SELECT id_cliente FROM Cliente WHERE correo = %s);
         """
-        cursor.execute(query_reportes_cliente, (correo,))
+        cursor.execute(query_reportes_cliente, (correo_usuario,))
         reportes = cursor.fetchall()
 
         if reportes:
             # Crear una nueva ventana para mostrar los reportes
-            ventana_reportes = tk.Tk()
+            ventana_reportes = tk.Toplevel(ventana_padre)
             ventana_reportes.title("Reportes Enviados")
 
             label = tk.Label(ventana_reportes, text="Tus Reportes Enviados", font=("Arial", 14))
@@ -122,14 +156,15 @@ def ver_reportes_enviados_cliente():
                 label_reporte = tk.Label(ventana_reportes, text=f"Título: {titulo}\nDescripción: {descripcion}\nTipo: {tipo_error}\nFecha: {fecha_reporte}", font=("Arial", 10))
                 label_reporte.pack(pady=10)
 
-            ventana_reportes.mainloop()
+            # Botón para cerrar la ventana de reportes
+            btn_cerrar = tk.Button(ventana_reportes, text="Cerrar", command=ventana_reportes.destroy)
+            btn_cerrar.pack(pady=10)
         else:
             messagebox.showinfo("Sin Reportes", "No tienes reportes enviados.")
         
         conn.close()
 
-def mostrar_menu_soporte():
-    ventana.destroy()  # Cierra la ventana de login
+def mostrar_menu_soporte(correo_usuario):
     ventana_soporte = tk.Tk()
     ventana_soporte.title("Menú Soporte")
 
@@ -137,16 +172,25 @@ def mostrar_menu_soporte():
     label.pack(pady=20)
 
     # Botón para ver los reportes generados
-    btn_ver_reportes = tk.Button(ventana_soporte, text="Ver Reportes", command=ver_reportes_soporte)
+    btn_ver_reportes = tk.Button(ventana_soporte, text="Ver Reportes", 
+                                command=ver_reportes_soporte)
     btn_ver_reportes.pack(pady=10)
 
     # Botón para asignar un reporte
-    btn_asignar_reporte = tk.Button(ventana_soporte, text="Asignar Reporte", command=asignar_reporte)
+    btn_asignar_reporte = tk.Button(ventana_soporte, text="Asignar Reporte", 
+                                   command=asignar_reporte)
     btn_asignar_reporte.pack(pady=10)
 
     # Botón para actualizar el estado de un reporte
-    btn_actualizar_reporte = tk.Button(ventana_soporte, text="Actualizar Reporte", command=actualizar_reporte)
+    btn_actualizar_reporte = tk.Button(ventana_soporte, text="Actualizar Reporte", 
+                                      command=actualizar_reporte)
     btn_actualizar_reporte.pack(pady=10)
+
+    # Botón para cerrar sesión
+    btn_cerrar_sesion = tk.Button(ventana_soporte, text="Cerrar Sesión", 
+                                 command=lambda: cerrar_sesion(ventana_soporte),
+                                 bg="red", fg="white")
+    btn_cerrar_sesion.pack(pady=20)
 
     ventana_soporte.mainloop()
 
@@ -162,23 +206,6 @@ def actualizar_reporte():
     # Aquí iría la lógica para actualizar el estado de un reporte
     messagebox.showinfo("Actualizar Reporte", "Esta función permitirá al soporte actualizar el estado de un reporte.")
 
-# Ventana de Login
-ventana = tk.Tk()
-ventana.title("Login")
-
-# Etiquetas y campos de entrada
-label_correo = tk.Label(ventana, text="Correo Electrónico")
-label_correo.pack(pady=5)
-entry_correo = tk.Entry(ventana)
-entry_correo.pack(pady=5)
-
-label_contraseña = tk.Label(ventana, text="Contraseña")
-label_contraseña.pack(pady=5)
-entry_contraseña = tk.Entry(ventana, show="*")
-entry_contraseña.pack(pady=5)
-
-# Botón de Login
-btn_login = tk.Button(ventana, text="Iniciar Sesión", command=verificar_usuario)
-btn_login.pack(pady=20)
-
-ventana.mainloop()
+# Iniciar la aplicación mostrando la pantalla de login
+if __name__ == "__main__":
+    mostrar_login()
