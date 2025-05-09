@@ -44,4 +44,48 @@ Puedes instalar las librerías necesarias con el siguiente comando:
 
 ```bash
 pip install psycopg2 bcrypt
+```
+## Cómo ejecutar el proyecto
+### 1. Configura la base de datos:
+Asegúrate de tener PostgreSQL instalado y configurado.
+Crea la base de datos tiendasoporte en PostgreSQL y asegúrate de que las tablas estén correctamente definidas con los esquemas proporcionados.
 
+### 2. Ejecuta el programa:
+Abre una terminal en la carpeta del proyecto.
+
+Ejecuta el archivo insertardatos.py:
+```bash
+python insertardatos.py
+```
+Esta te dara los 2 primeros usuarios para que puedas probar la aplicacion
+#### El cliente
+Usuario : juan.perez@cliente.com
+Contraseña : cliente123
+#### El usuario
+Usuario : maria.lopez@soporte.com
+Contraseña : soporte123
+
+Luego Ejecuta el archivo login_integrado.py:
+```bash
+python login_integrado.py
+```
+### 3. Interfaz de Usuario:
+Se abrirá una ventana de login. Ingresa las credenciales de un cliente o empleado de soporte para acceder al sistema.
+Si eres cliente, podrás generar reportes y ver los que ya has enviado.
+Si eres soporte, podrás gestionar los reportes asignados y actualizar su estado.
+
+Estructura del Proyecto
+```bash
+/proyecto
+  ├── login_integrado.py      # Código principal del programa
+  ├── insertardatos.py        # Script para insertar datos de prueba en la base de datos
+  └── README.md               # Este archivo
+```
+
+## Contribuciones
+
+Haz un fork de este repositorio.
+Crea una rama para tu cambio (git checkout -b feature/nueva-funcionalidad).
+Haz los cambios y haz commit (git commit -am 'Agregada nueva funcionalidad').
+Haz push a la rama (git push origin feature/nueva-funcionalidad).
+Abre un Pull Request.
