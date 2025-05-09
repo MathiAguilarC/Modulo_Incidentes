@@ -198,13 +198,175 @@ def ver_reportes_soporte():
     # Aquí iría la lógica para que el soporte pueda ver los reportes
     messagebox.showinfo("Ver Reportes", "Esta función permitirá al soporte ver los reportes generados.")
 
+import tkinter as tk
+from tkinter import messagebox, simpledialog
+from tkinter import ttk
+
 def asignar_reporte():
-    # Aquí iría la lógica para asignar un reporte a un empleado de soporte
-    messagebox.showinfo("Asignar Reporte", "Esta función permitirá al soporte asignar un reporte.")
+    conn = conectar_db()
+    if not conn:
+        return
+    cursor = conn.cursor()
+
+    # Obtener incidencias sin empleado asignado
+    cursor.execute("""
+        SELECT i.id_incidencia, r.titulo, i.estado
+        FROM Incidencia i
+        LEFT JOIN Reporte r ON i.id_reporte = r.id_reporte
+        WHERE i.id_empleado_soporte IS NULL
+    """)
+    incidencias = cursor.fetchall()
+
+    if not incidencias:
+        messagebox.showinfo("Asignar Reporte", "No hay incidencias sin empleado asignado.")
+        conn.close()
+        return
+
+    # Obtener empleados de soporte
+    cursor.execute("SELECT id_empleado, nombre FROM EmpleadoSoporte")
+    empleados = cursor.fetchall()
+
+    if not empleados:
+        messagebox.showinfo("Asignar Reporte", "No hay empleados de soporte disponibles.")
+        conn.close()
+        return
+
+    # Crear ventana para asignar
+    ventana_asignar = tk.Toplevel()
+    ventana_asignar.title("Asignar Empleado a Incidencia")
+
+    label_inc = tk.Label(ventana_asignar, text="Selecciona una incidencia sin asignar:")
+    label_inc.pack(pady=5)
+
+    tree_inc = ttk.Treeview(ventana_asignar, columns=("ID", "Título", "Estado"), show="headings")
+    tree_inc.heading("ID", text="ID")
+    tree_inc.heading("Título", text="Título")
+    tree_inc.heading("Estado", text="Estado")
+    tree_inc.pack(pady=5)
+
+    for inc in incidencias:
+        tree_inc.insert("", "end", values=inc)
+
+    label_emp = tk.Label(ventana_asignar, text="Selecciona un empleado:")
+    label_emp.pack(pady=5)
+
+    tree_emp = ttk.Treeview(ventana_asignar, columns=("ID", "Nombre"), show="headings")
+    tree_emp.heading("ID", text="ID")
+    tree_emp.heading("Nombre", text="Nombre")
+    tree_emp.pack(pady=5)
+
+    for emp in empleados:
+        tree_emp.insert("", "end", values=emp)
+
+    def asignar():
+        selected_inc = tree_inc.selection()
+        selected_emp = tree_emp.selection()
+        if not selected_inc or not selected_emp:
+            messagebox.showerror("Error", "Debe seleccionar una incidencia y un empleado.")
+            return
+        id_incidencia = tree_inc.item(selected_inc[0])['values'][0]
+        id_empleado = tree_emp.item(selected_emp[0])['values'][0]
+
+        try:
+            cursor.execute("""
+                UPDATE Incidencia
+                SET id_empleado_soporte = %s, estado = 'En Progreso', fecha_actualizacion = NOW()
+                WHERE id_incidencia = %s
+            """, (id_empleado, id_incidencia))
+            conn.commit()
+            messagebox.showinfo("Asignar Reporte", f"Empleado asignado a la incidencia {id_incidencia} exitosamente.")
+            ventana_asignar.destroy()
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo asignar el empleado: {e}")
+
+    btn_asignar = tk.Button(ventana_asignar, text="Asignar", command=asignar)
+    btn_asignar.pack(pady=10)
 
 def actualizar_reporte():
-    # Aquí iría la lógica para actualizar el estado de un reporte
-    messagebox.showinfo("Actualizar Reporte", "Esta función permitirá al soporte actualizar el estado de un reporte.")
+    conn = conectar_db()
+    if not conn:
+        return
+    cursor = conn.cursor()
+
+    # Pedir correo del empleado para filtrar incidencias asignadas
+    correo_empleado = simpledialog.askstring("Actualizar Reporte", "Ingrese su correo electrónico:")
+
+    if not correo_empleado:
+        messagebox.showerror("Error", "Debe ingresar un correo electrónico.")
+        conn.close()
+        return
+
+    # Obtener id_empleado a partir del correo
+    cursor.execute("SELECT id_empleado FROM EmpleadoSoporte WHERE correo = %s", (correo_empleado,))
+    empleado = cursor.fetchone()
+
+    if not empleado:
+        messagebox.showerror("Error", "Empleado no encontrado.")
+        conn.close()
+        return
+
+    id_empleado = empleado[0]
+
+    # Obtener incidencias asignadas a este empleado
+    cursor.execute("""
+        SELECT i.id_incidencia, r.titulo, i.estado
+        FROM Incidencia i
+        JOIN Reporte r ON i.id_reporte = r.id_reporte
+        WHERE i.id_empleado_soporte = %s
+    """, (id_empleado,))
+    incidencias = cursor.fetchall()
+
+    if not incidencias:
+        messagebox.showinfo("Actualizar Reporte", "No hay incidencias asignadas a este empleado.")
+        conn.close()
+        return
+
+    ventana_actualizar = tk.Toplevel()
+    ventana_actualizar.title("Actualizar Estado de Incidencia")
+
+    label_inc = tk.Label(ventana_actualizar, text="Selecciona una incidencia para actualizar:")
+    label_inc.pack(pady=5)
+
+    tree_inc = ttk.Treeview(ventana_actualizar, columns=("ID", "Título", "Estado"), show="headings")
+    tree_inc.heading("ID", text="ID")
+    tree_inc.heading("Título", text="Título")
+    tree_inc.heading("Estado", text="Estado")
+    tree_inc.pack(pady=5)
+
+    for inc in incidencias:
+        tree_inc.insert("", "end", values=inc)
+
+    label_estado = tk.Label(ventana_actualizar, text="Selecciona el nuevo estado:")
+    label_estado.pack(pady=5)
+
+    estados = ['Pendiente', 'En Progreso', 'Resuelto', 'Cerrado']
+    combo_estado = ttk.Combobox(ventana_actualizar, values=estados, state="readonly")
+    combo_estado.pack(pady=5)
+    combo_estado.current(0)
+
+    def actualizar():
+        selected_inc = tree_inc.selection()
+        nuevo_estado = combo_estado.get()
+        if not selected_inc:
+            messagebox.showerror("Error", "Debe seleccionar una incidencia.")
+            return
+        id_incidencia = tree_inc.item(selected_inc[0])['values'][0]
+
+        try:
+            cursor.execute("""
+                UPDATE Incidencia
+                SET estado = %s, fecha_actualizacion = NOW()
+                WHERE id_incidencia = %s
+            """, (nuevo_estado, id_incidencia))
+            conn.commit()
+            messagebox.showinfo("Actualizar Reporte", f"Estado actualizado a '{nuevo_estado}' para la incidencia {id_incidencia}.")
+            ventana_actualizar.destroy()
+        except Exception as e:
+            messagebox.showerror("Error", f"No se pudo actualizar el estado: {e}")
+
+    btn_actualizar = tk.Button(ventana_actualizar, text="Actualizar", command=actualizar)
+    btn_actualizar.pack(pady=10)
+
 
 # Iniciar la aplicación mostrando la pantalla de login
 if __name__ == "__main__":

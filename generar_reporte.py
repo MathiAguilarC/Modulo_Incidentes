@@ -2,6 +2,8 @@ from conexion import conectar
 
 def crear_incidencia():
     conn = conectar()
+    if not conn:
+        return
     cursor = conn.cursor()
 
     print("=== CREAR NUEVA INCIDENCIA ===")
@@ -11,18 +13,20 @@ def crear_incidencia():
     categoria = input("Categoría: ")
     id_usuario = int(input("ID del usuario que reporta: "))
 
-    # Aquí se cambia de 'incidencias' a 'incidencia'
     sql = '''
-    INSERT INTO incidencia (titulo, descripcion, prioridad, categoria, estado, id_usuario, fecha_creacion)
+    INSERT INTO Incidencia (titulo, descripcion, prioridad, categoria, estado, id_usuario, fecha_creacion)
     VALUES (%s, %s, %s, %s, 'Pendiente', %s, NOW())
     '''
     valores = (titulo, descripcion, prioridad, categoria, id_usuario)
 
-    cursor.execute(sql, valores)
-    conn.commit()
-
-    print("✅ Incidencia registrada exitosamente.")
-    conn.close()
+    try:
+        cursor.execute(sql, valores)
+        conn.commit()
+        print("✅ Incidencia registrada exitosamente.")
+    except Exception as e:
+        print(f"Error al registrar incidencia: {e}")
+    finally:
+        conn.close()
 
 if __name__ == "__main__":
     crear_incidencia()

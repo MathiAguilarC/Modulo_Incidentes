@@ -1,13 +1,21 @@
-import mysql.connector
+import psycopg2
+from tkinter import messagebox
+
+db_params = {
+    'user': 'postgres',
+    'host': 'localhost',
+    'database': 'tiendasoporte',
+    'password': 'root',
+    'port': 5432
+}
 
 def conectar():
-    return mysql.connector.connect(
-        host="localhost",
-        user="root",         
-        password="",         
-        database="tiendaSoporte"
-    )
-
+    try:
+        conn = psycopg2.connect(**db_params)
+        return conn
+    except Exception as e:
+        messagebox.showerror("Error de Conexión", f"No se pudo conectar a la base de datos: {e}")
+        return None
 
 #BASE DE DATOS EN SQL :
 

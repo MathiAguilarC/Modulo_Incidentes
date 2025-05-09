@@ -2,10 +2,12 @@ from conexion import conectar
 
 def ver_incidencia():
     conn = conectar()
+    if not conn:
+        return
     cursor = conn.cursor()
 
     print("=== LISTA DE INCIDENCIAS PENDIENTES ===")
-    cursor.execute("SELECT id, titulo, estado FROM incidencia WHERE estado = 'Pendiente'")
+    cursor.execute("SELECT id_incidencia, titulo, estado FROM Incidencia WHERE estado = 'Pendiente'")
     incidencia = cursor.fetchall()
 
     if not incidencia:
@@ -16,8 +18,14 @@ def ver_incidencia():
     for inc in incidencia:
         print(f"ID: {inc[0]} | Título: {inc[1]} | Estado: {inc[2]}")
 
-    id_buscar = int(input("\nIngresa el ID de la incidencia para ver detalles: "))
-    cursor.execute("SELECT * FROM incidencia WHERE id = %s", (id_buscar,))
+    try:
+        id_buscar = int(input("\nIngresa el ID de la incidencia para ver detalles: "))
+    except ValueError:
+        print("⚠️ ID inválido.")
+        conn.close()
+        return
+
+    cursor.execute("SELECT * FROM Incidencia WHERE id_incidencia = %s", (id_buscar,))
     detalle = cursor.fetchone()
 
     if detalle:
