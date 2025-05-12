@@ -4,8 +4,8 @@ CREATE TABLE Cliente (
     id_cliente SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(100) NOT NULL UNIQUE,
-    telefono VARCHAR(15) NOT NULL,
-    contrasena VARCHAR(100) NOT NULL
+    contrasena VARCHAR(255) NOT NULL,
+    telefono VARCHAR(15) NOT NULL
 );
 
 -- Tabla EmpleadoSoporte
@@ -13,7 +13,7 @@ CREATE TABLE EmpleadoSoporte (
     id_empleado SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(100) NOT NULL UNIQUE,
-	contrasena VARCHAR(100) NOT NULL,
+	contrasena VARCHAR(255) NOT NULL,
 	telefono VARCHAR(15) NOT NULL
 );
 
@@ -21,6 +21,7 @@ CREATE TABLE EmpleadoSoporte (
 CREATE TABLE Reporte (
     id_reporte SERIAL PRIMARY KEY,
     id_cliente INT,
+    titulo VARCHAR(255) NOT NULL,
     descripcion TEXT NOT NULL,
     tipo_error VARCHAR(50) CHECK (tipo_error IN ('pago', 'devolucion', 'producto', 'otro')) NOT NULL,
     fecha_reporte TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
