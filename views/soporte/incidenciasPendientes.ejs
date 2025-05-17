@@ -1,0 +1,6 @@
+<h2>Incidencias Pendientes</h2>
+<ul>
+  <% incidencias.forEach(i => { %>
+    <li>Reporte ID: <%= i.id_reporte %> - Estado: <%= i.estado %></li>
+  <% }); %>
+</ul>

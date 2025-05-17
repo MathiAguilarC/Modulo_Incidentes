@@ -1,0 +1,6 @@
+<h2>Reportes Enviados</h2>
+<ul>
+  <% reportes.forEach(r => { %>
+    <li><%= r.titulo %> - <%= r.descripcion %> - <%= r.tipo_error %></li>
+  <% }); %>
+</ul>
