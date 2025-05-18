@@ -21,6 +21,9 @@ public class ReporteService {
     public void crearReporteYIncidencia(Reporte reporte) {
         // Guardar reporte
         reporte.setFechaReporte(LocalDateTime.now());
+        if (reporte.getCliente() == null) {
+            throw new IllegalArgumentException("El reporte debe tener un cliente asociado");
+        }
         Reporte reporteGuardado = reporteRepo.save(reporte);
 
         // Crear incidencia con prioridad según tipo_error
