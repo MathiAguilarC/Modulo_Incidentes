@@ -2,14 +2,38 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>AsigReporte</title>
+    <title>Asignar Reporte a Soporte</title>
     <link rel="stylesheet" href="/css/style.css" />
   </head>
   <body>
     <h2>Asignar Reporte a Soporte</h2>
     <form method="POST" action="/admin/asignar">
-      <input type="number" name="id_reporte" placeholder="ID Reporte" required />
-      <input type="number" name="id_empleado" placeholder="ID Empleado Soporte" required />
+      <h3>Selecciona Reporte</h3>
+      <select name="id_reporte" required>
+        <% reportes.forEach(function(reporte) { %>
+          <option value="<%= reporte.id_reporte %>">
+            ID: <%= reporte.id_reporte %> - Título: <%= reporte.titulo %> - Descripción: <%= reporte.descripcion %> - Tipo: <%= reporte.tipo_error %>
+          </option>
+        <% }); %>
+      </select>
+
+      <h3>Selecciona Empleado de Soporte</h3>
+      <select name="id_empleado" required>
+        <% empleados.forEach(function(empleado) { %>
+          <option value="<%= empleado.id_empleado %>">
+            Nombre: <%= empleado.nombre %> - Correo: <%= empleado.correo %> - Teléfono: <%= empleado.telefono %>
+          </option>
+        <% }); %>
+      </select>
+
+      <h3>Prioridad</h3>
+      <select name="prioridad" required>
+        <option value="Alta">Alta</option>
+        <option value="Media" selected>Media</option>
+        <option value="Baja">Baja</option>
+      </select>
+
+      <br /><br />
       <button type="submit">Asignar</button>
     </form>
   </body>

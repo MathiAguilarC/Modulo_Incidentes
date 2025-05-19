@@ -46,13 +46,32 @@ async function insertarEmpleadoSoporte() {
   try {
     const hash = await encriptarContrasena(contrasena);
     const query = `
-      INSERT INTO EmpleadoSoporte (nombre, correo, telefono, contrasena)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO EmpleadoSoporte (nombre, correo, telefono, contrasena, rol)
+      VALUES ($1, $2, $3, $4, $5)
     `;
-    await pool.query(query, [nombre, correo, telefono, hash]);
+    await pool.query(query, [nombre, correo, telefono, hash, 'soporte']);
     console.log('✅ Empleado de soporte insertado exitosamente.');
   } catch (error) {
     console.error('❌ Error insertando soporte:', error.message);
+  }
+}
+
+async function insertarAdministrador() {
+  const nombre = 'Admin Prueba';
+  const correo = 'admin@soporte.com';
+  const telefono = '900123456';
+  const contrasena = 'admin123';
+
+  try {
+    const hash = await encriptarContrasena(contrasena);
+    const query = `
+      INSERT INTO EmpleadoSoporte (nombre, correo, telefono, contrasena, rol)
+      VALUES ($1, $2, $3, $4, $5)
+    `;
+    await pool.query(query, [nombre, correo, telefono, hash, 'administrador']);
+    console.log('✅ Administrador insertado exitosamente.');
+  } catch (error) {
+    console.error('❌ Error insertando administrador:', error.message);
   }
 }
 
@@ -69,5 +88,6 @@ async function probarConexion() {
   await probarConexion();
   await insertarCliente();
   await insertarEmpleadoSoporte();
+  await insertarAdministrador();
   await pool.end();
 })();

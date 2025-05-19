@@ -5,7 +5,6 @@ const loginRoutes = require('./routes/login');
 const clienteRoutes = require('./routes/cliente');
 const soporteRoutes = require('./routes/soporte');
 const administradorRoutes = require('./routes/administrador');
-const sassMiddleware = require('node-sass-middleware');
 const path = require('path');
 
 const app = express();
@@ -22,18 +21,6 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
-app.use(
-  sassMiddleware({
-    /* Source of SCSS files */
-    src: path.join(__dirname, 'public/scss'),
-    /* Destination for compiled CSS */
-    dest: path.join(__dirname, 'public/css'),
-    debug: true,
-    outputStyle: 'compressed',
-    prefix: '/css' // URL path
-  })
-);
-
 // Rutas principales
 app.use('/', loginRoutes);
 app.use('/cliente', clienteRoutes);
