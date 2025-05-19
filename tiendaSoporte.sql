@@ -13,8 +13,9 @@ CREATE TABLE EmpleadoSoporte (
     id_empleado SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(100) NOT NULL UNIQUE,
-	contrasena VARCHAR(255) NOT NULL,
-	telefono VARCHAR(15) NOT NULL
+    contrasena VARCHAR(255) NOT NULL,
+    telefono VARCHAR(15) NOT NULL,
+    rol VARCHAR(20) NOT NULL DEFAULT 'soporte' CHECK (rol IN ('soporte', 'administrador'))
 );
 
 -- Tabla Reporte
@@ -37,6 +38,7 @@ CREATE TABLE Incidencia (
     fecha_reporte TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     id_empleado_soporte INT,
+    comentario VARCHAR(255),
     fecha_solucion_temporal TIMESTAMP,
     fecha_solucion_definitiva TIMESTAMP,
     FOREIGN KEY (id_reporte) REFERENCES Reporte(id_reporte),

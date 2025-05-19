@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Actualizar</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <h2>Actualizar Incidencia</h2>
+    <form method="POST" action="/soporte/actualizar" aria-label="Formulario para actualizar incidencia">
+      <label for="id_incidencia">ID Incidencia</label>
+      <input type="number" id="id_incidencia" name="id_incidencia" placeholder="ID Incidencia" required />
+      
+      <label for="estado">Estado</label>
+      <select id="estado" name="estado">
+        <option>Pendiente</option>
+        <option>En Progreso</option>
+        <option>Resuelto</option>
+        <option>Cerrado</option>
+      </select>
+      
+      <label for="prioridad">Prioridad</label>
+      <select id="prioridad" name="prioridad">
+        <option>Alta</option>
+        <option>Media</option>
+        <option>Baja</option>
+      </select>
+      
+      <button type="submit">Actualizar</button>
+    </form>
+  </body>
+</html>
