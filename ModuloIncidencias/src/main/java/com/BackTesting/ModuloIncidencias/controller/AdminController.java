@@ -1,6 +1,7 @@
 package com.BackTesting.ModuloIncidencias.controller;
 
 import com.BackTesting.ModuloIncidencias.dto.AsignarIncidenciaDTO;
+import com.BackTesting.ModuloIncidencias.dto.DetalleIncidenciaDTO;
 import com.BackTesting.ModuloIncidencias.dto.IncidenciaPendienteDTO;
 import com.BackTesting.ModuloIncidencias.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,5 +27,11 @@ public class AdminController {
         adminService.asignarIncidencia(dto);
         return ResponseEntity.ok("Incidencia asignada correctamente");
     }
+    @GetMapping("/incidencia/{id}")
+    public ResponseEntity<DetalleIncidenciaDTO> verDetalleIncidencia(@PathVariable Integer id) {
+        DetalleIncidenciaDTO detalles = adminService.obtenerDetallesAdministrativo(id);
+        return ResponseEntity.ok(detalles);
+    }
+
 
 }
