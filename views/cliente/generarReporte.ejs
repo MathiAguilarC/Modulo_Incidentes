@@ -1,12 +1,28 @@
-<h2>Generar Reporte</h2>
-<form method="POST" action="/cliente/generar">
-  <input type="text" name="titulo" placeholder="Título" required />
-  <textarea name="descripcion" placeholder="Descripción" required></textarea>
-  <select name="tipo_error" required>
-    <option value="pago">Pago</option>
-    <option value="devolucion">Devolución</option>
-    <option value="producto">Producto</option>
-    <option value="otro">Otro</option>
-  </select>
-  <button type="submit">Enviar</button>
-</form>
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>GenReporte</title>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <h2>Generar Reporte</h2>
+    <form method="POST" action="/cliente/generar" aria-label="Formulario para generar reporte">
+      <label for="titulo">Título</label>
+      <input type="text" id="titulo" name="titulo" placeholder="Título" required />
+      
+      <label for="descripcion">Descripción</label>
+      <textarea id="descripcion" name="descripcion" placeholder="Descripción" required></textarea>
+      
+      <label for="tipo_error">Tipo de Error</label>
+      <select id="tipo_error" name="tipo_error" required>
+        <option value="pago">Pago</option>
+        <option value="devolucion">Devolución</option>
+        <option value="producto">Producto</option>
+        <option value="otro">Otro</option>
+      </select>
+      
+      <button type="submit">Enviar</button>
+    </form>
+  </body>
+</html>
