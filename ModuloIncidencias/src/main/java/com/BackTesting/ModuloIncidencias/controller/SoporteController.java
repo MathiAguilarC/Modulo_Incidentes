@@ -1,5 +1,6 @@
 package com.BackTesting.ModuloIncidencias.controller;
 
+import com.BackTesting.ModuloIncidencias.dto.ActualizarIncidenciaDTO;
 import com.BackTesting.ModuloIncidencias.dto.ReporteSoporteDTO;
 import com.BackTesting.ModuloIncidencias.model.EmpleadoSoporte;
 import com.BackTesting.ModuloIncidencias.repository.EmpleadoSoporteRepository;
@@ -8,9 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -35,5 +34,17 @@ public class SoporteController {
         List<ReporteSoporteDTO> reportes = soporteService.obtenerReportesPorEmpleado(empleado.getId_empleado());
 
         return ResponseEntity.ok(reportes);
+    }
+    @PutMapping("/incidencia")
+    public ResponseEntity<String> actualizarIncidencia(@RequestBody ActualizarIncidenciaDTO dto) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String correo = auth.getName();
+
+        EmpleadoSoporte empleado = empleadoSoporteRepository.findByCorreo(correo)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+        soporteService.actualizarIncidencia(empleado.getId_empleado(), dto);
+
+        return ResponseEntity.ok("Incidencia actualizada correctamente");
     }
 }
