@@ -26,6 +26,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers("/cliente/**").authenticated() // ✅ Esta línea permite acceder a /cliente con token
                         .requestMatchers("/soporte/**").authenticated()
+                        .requestMatchers("/admin/**").authenticated()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
