@@ -9,7 +9,8 @@ import java.time.LocalDateTime;
 public class Incidencia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_incidencia;
+    @Column(name = "id_incidencia")
+    private Integer idIncidencia;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_reporte")
@@ -39,7 +40,7 @@ public class Incidencia {
     private EmpleadoSoporte empleadoSoporte;
 
     public Integer getId_incidencia() {
-        return id_incidencia;
+        return idIncidencia;
     }
 
     public Reporte getReporte() {

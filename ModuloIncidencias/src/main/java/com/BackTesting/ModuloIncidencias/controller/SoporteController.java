@@ -1,6 +1,7 @@
 package com.BackTesting.ModuloIncidencias.controller;
 
 import com.BackTesting.ModuloIncidencias.dto.ActualizarIncidenciaDTO;
+import com.BackTesting.ModuloIncidencias.dto.DetalleIncidenciaDTO;
 import com.BackTesting.ModuloIncidencias.dto.ReporteSoporteDTO;
 import com.BackTesting.ModuloIncidencias.model.EmpleadoSoporte;
 import com.BackTesting.ModuloIncidencias.repository.EmpleadoSoporteRepository;
@@ -46,5 +47,17 @@ public class SoporteController {
         soporteService.actualizarIncidencia(empleado.getId_empleado(), dto);
 
         return ResponseEntity.ok("Incidencia actualizada correctamente");
+    }
+    @GetMapping("/incidencia/{id}")
+    public ResponseEntity<DetalleIncidenciaDTO> getDetallesIncidencia(@PathVariable Integer id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String correo = auth.getName();
+
+        EmpleadoSoporte soporte = empleadoSoporteRepository.findByCorreo(correo)
+                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
+
+        DetalleIncidenciaDTO detalles = soporteService.obtenerDetallesDeIncidencia(soporte.getId_empleado(), id);
+
+        return ResponseEntity.ok(detalles);
     }
 }

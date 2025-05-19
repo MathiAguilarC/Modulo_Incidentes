@@ -1,10 +1,13 @@
 package com.BackTesting.ModuloIncidencias.service;
 
 import com.BackTesting.ModuloIncidencias.dto.ActualizarIncidenciaDTO;
+import com.BackTesting.ModuloIncidencias.dto.DetalleIncidenciaDTO;
 import com.BackTesting.ModuloIncidencias.dto.ReporteSoporteDTO;
+import com.BackTesting.ModuloIncidencias.dto.SolucionDTO;
 import com.BackTesting.ModuloIncidencias.model.Incidencia;
 import com.BackTesting.ModuloIncidencias.model.Reporte;
 import com.BackTesting.ModuloIncidencias.repository.IncidenciaRepository;
+import com.BackTesting.ModuloIncidencias.repository.SolucionesRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +20,8 @@ public class SoporteService {
 
     @Autowired
     private IncidenciaRepository incidenciaRepository;
+    @Autowired
+    private SolucionesRepository solucionesRepo;
 
     public List<ReporteSoporteDTO> obtenerReportesPorEmpleado(Integer idEmpleado) {
         List<Incidencia> incidencias = incidenciaRepository.findByEmpleadoSoporteId(idEmpleado);
@@ -56,4 +61,34 @@ public class SoporteService {
 
         incidenciaRepository.save(incidencia);
     }
+
+    public DetalleIncidenciaDTO obtenerDetallesDeIncidencia(Integer idEmpleado, Integer idIncidencia) {
+        Incidencia incidencia = incidenciaRepository.findById(idIncidencia)
+                .orElseThrow(() -> new RuntimeException("Incidencia no encontrada"));
+
+        if (incidencia.getEmpleadoSoporte() == null ||
+                !incidencia.getEmpleadoSoporte().getId_empleado().equals(idEmpleado)) {
+            throw new RuntimeException("No tienes permiso para ver esta incidencia");
+        }
+
+        Reporte reporte = incidencia.getReporte();
+
+        List<SolucionDTO> historial = solucionesRepo.findByIncidencia_IdIncidencia(idIncidencia).stream()
+                .map(sol -> new SolucionDTO(sol.getTipoSolucion(), sol.getDescripcion(), sol.getFechaAplicacion()))
+                .collect(Collectors.toList());
+
+        return new DetalleIncidenciaDTO(
+                incidencia.getId_incidencia(),
+                reporte.getTitulo(),
+                reporte.getDescripcion(),
+                reporte.getTipo_error(),
+                reporte.getFechaReporte(),
+                incidencia.getEstado(),
+                incidencia.getPrioridad(),
+                incidencia.getComentario(),
+                incidencia.getFechaActualizacion(),
+                historial
+        );
+    }
+
 }
