@@ -1,12 +1,11 @@
 package com.BackTesting.ModuloIncidencias.controller;
 
+import com.BackTesting.ModuloIncidencias.dto.AsignarIncidenciaDTO;
 import com.BackTesting.ModuloIncidencias.dto.IncidenciaPendienteDTO;
 import com.BackTesting.ModuloIncidencias.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,4 +21,10 @@ public class AdminController {
         List<IncidenciaPendienteDTO> lista = adminService.obtenerIncidenciasPendientes();
         return ResponseEntity.ok(lista);
     }
+    @PostMapping("/incidencias/asignar")
+    public ResponseEntity<String> asignarIncidencia(@RequestBody AsignarIncidenciaDTO dto) {
+        adminService.asignarIncidencia(dto);
+        return ResponseEntity.ok("Incidencia asignada correctamente");
+    }
+
 }
