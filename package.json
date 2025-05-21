@@ -10,15 +10,11 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@tailwindcss/cli": "^4.1.7",
     "bcrypt": "^6.0.0",
     "body-parser": "^2.2.0",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.1",
-    "node-sass-middleware": "^1.1.0",
-    "pg": "^8.16.0",
-    "sass": "^1.89.0",
-    "tailwindcss": "^4.1.7"
+    "pg": "^8.16.0"
   }
 }

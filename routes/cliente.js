@@ -34,6 +34,7 @@ router.get('/reportes', async (req, res) => {
     const result = await pool.query(`
       SELECT * FROM Reporte WHERE id_cliente = $1
     `, [id_cliente]);
+
     res.render('cliente/verReportes', { reportes: result.rows });
   } catch (error) {
     console.error(error);

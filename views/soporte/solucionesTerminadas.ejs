@@ -2,21 +2,21 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-    <title>Incidencias Pendientes</title>
+    <title>Soluciones Terminadas</title>
     <link rel="stylesheet" href="/css/style.css" />
   </head>
-  <body>
-    <h2>Incidencias Pendientes</h2>
+  <body class="soporte">
+    <h2>Soluciones Terminadas</h2>
     <% if (!incidencias || incidencias.length === 0) { %>
-      <p>No hay incidencias pendientes.</p>
+      <p>No hay incidencias terminadas.</p>
     <% } else { %>
       <% incidencias.forEach(function(incidencia) { %>
-        <div class="incidencia-card">
+        <div class="incidencia-card terminada">
           <p><strong>ID Incidencia:</strong> <%= incidencia.id_incidencia %></p>
           <p><strong>ID Reporte:</strong> <%= incidencia.id_reporte %></p>
           <p><strong>Estado:</strong> <%= incidencia.estado %></p>
           <p><strong>Prioridad:</strong> <%= incidencia.prioridad %></p>
-          <a href="/soporte/solucion/<%= incidencia.id_incidencia %>" class="btn-solucion">Solucionar</a>
+          <p><strong>Comentario:</strong> <%= incidencia.comentario || 'Sin comentarios' %></p>
         </div>
       <% }); %>
     <% } %>

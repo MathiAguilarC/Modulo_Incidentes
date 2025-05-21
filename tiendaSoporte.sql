@@ -55,4 +55,4 @@ CREATE TABLE Soluciones (
     fecha_aplicacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_incidencia) REFERENCES Incidencia(id_incidencia),
     FOREIGN KEY (id_empleado_solucion) REFERENCES EmpleadoSoporte(id_empleado)  -- Relaciona con la tabla EmpleadoSoporte
-);  
+);

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Brindar Solución</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <style>
+    form {
+      max-width: 600px;
+      margin: 20px auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    fieldset {
+      border: 1px solid #ccc;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 6px;
+      background-color: #f9f9f9;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input[type="text"], textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+      resize: vertical;
+    }
+    textarea {
+      min-height: 100px;
+    }
+    button {
+      background-color: #2980b9;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background-color 0.3s ease;
+      display: inline-block;
+    }
+    button:hover {
+      background-color: #3498db;
+      outline: none;
+    }
+    h2 {
+      text-align: center;
+      color: #2c3e50;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Brindar Solución a Incidencia ID: <%= incidencia.id_incidencia %></h2>
+  <form action="/soporte/solucion" method="POST">
+    <input type="hidden" name="id_incidencia" value="<%= incidencia.id_incidencia %>" />
+    <fieldset disabled>
+      <label>ID Reporte:</label>
+      <input type="text" value="<%= incidencia.id_reporte %>" />
+      <label>Estado Actual:</label>
+      <input type="text" value="<%= incidencia.estado %>" />
+      <label>Prioridad:</label>
+      <input type="text" value="<%= incidencia.prioridad %>" />
+      <label>Comentario Actual:</label>
+      <textarea><%= incidencia.comentario || '' %></textarea>
+    </fieldset>
+    <label for="descripcion">Agregar Comentarios:</label>
+    <textarea id="descripcion" name="descripcion" required></textarea>
+
+    <label for="tipo_solucion">Tipo de Solución:</label>
+    <select id="tipo_solucion" name="tipo_solucion" required>
+      <option value="">Seleccione una opción</option>
+      <option value="temporal">Temporal</option>
+      <option value="definitiva">Definitiva</option>
+    </select>
+
+    <button type="submit">Guardar Solución</button>
+  </form>
+</body>
+</html>
